@@ -2,6 +2,7 @@
 
 **Application Report for Master Data Science**
 **TU Dortmund University - Department of Statistics**
+**Applicant: Khondokar Nazran Ahmod**
 **Submitted to: Prof. Dr. Andreas Groll**
 **Application Period: Summer Semester 2026**
 **Date: January 9, 2026**
@@ -753,7 +754,7 @@ Zeileis, A., Kleiber, C., & Jackman, S. (2008). Regression models for count data
 
 4. No part of this report has been submitted for any other academic purpose or published elsewhere.
 
-**Applicant:** [Your Full Name]
+**Applicant:** Khondokar Nazran Ahmod
 **Date:** January 9, 2026
 **Application Period:** Summer Semester 2026
 **Submitted to:** Prof. Dr. Andreas Groll, Department of Statistics, TU Dortmund University
