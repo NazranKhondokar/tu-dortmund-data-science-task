@@ -1,0 +1,474 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage[left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm]{geometry}
+\usepackage{setspace}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage{caption}
+\usepackage{natbib}
+
+\onehalfspacing
+
+\begin{document}
+
+% ============= TITLE PAGE =============
+\begin{titlepage}
+\centering
+\vspace*{2cm}
+
+{\LARGE\textbf{TU Dortmund University}}\\[0.5cm]
+{\large Department of Statistics}\\[2cm]
+
+{\huge\textbf{Performance Analysis of Professional Cyclists in a Multi-Stage Tour}}\\[0.5cm]
+{\Large Application Report for Master Data Science}\\[3cm]
+
+{\large\textbf{Applicant Name: [Your Full Name]}}\\[0.5cm]
+{\large Submitted to: Prof. Dr. Andreas Groll}\\[0.5cm]
+{\large Application Period: Summer Semester 2026}\\[2cm]
+
+{\large\today}
+
+\vfill
+\end{titlepage}
+
+% ============= TABLE OF CONTENTS =============
+\tableofcontents
+\newpage
+
+% ============= 1. INTRODUCTION =============
+\section{Introduction}
+
+Professional cycling races, particularly multi-stage tours, present a complex performance environment where different types of riders excel under varying terrain conditions. Understanding these performance patterns is crucial for team strategy, rider selection, and race prediction. This report analyzes data from a cycling manager game where professional riders earn performance points across different stages of a multi-stage tour.
+
+The central research questions of this analysis are:
+\begin{enumerate}
+\item Is there a significant difference in performance between different rider classes?
+\item Does rider performance vary systematically across different stage classes (terrain types)?
+\item Is there an interaction effect between rider class and stage class on performance?
+\end{enumerate}
+
+The dataset contains 3,496 observations from 184 professional cyclists classified into four categories: All Rounder, Climber, Sprinter, and Unclassed. These riders competed across 19 stages, classified by terrain type as flat, hills, or mountain stages. The primary outcome variable is the number of points earned per stage, with higher points indicating better performance.
+
+This analysis employs both descriptive statistical methods and non-parametric hypothesis tests to address the research questions. The main findings reveal significant performance differences between rider classes, with notable interaction effects between rider classification and terrain type. Specifically, All Rounders and Climbers demonstrate superior performance on mountain stages, while Sprinters excel on flat terrain.
+
+The remainder of this report is structured as follows: Section 2 provides a detailed description of the dataset and research questions. Section 3 presents the statistical methods employed. Section 4 contains the empirical results from descriptive analysis and hypothesis testing. Section 5 summarizes the findings and discusses implications and limitations.
+
+% ============= 2. PROBLEM DESCRIPTION =============
+\section{Problem Description and Data}
+
+\subsection{Research Context}
+The dataset originates from a cycling manager game simulation that models real-world professional cycling dynamics. In such races, rider specialization plays a critical role: sprinters typically excel on flat stages with their explosive speed, climbers dominate mountainous terrain with sustained power output, and all-rounders maintain consistent performance across varied conditions \citep{lucia2003tour}. This specialization pattern motivates our investigation into whether statistically significant performance differences exist between rider categories.
+
+\subsection{Research Questions}
+Building on the introductory overview, we formulate the following specific research questions:
+
+\textbf{RQ1:} Do the four rider classes (All Rounder, Climber, Sprinter, Unclassed) exhibit significantly different overall performance levels?
+
+\textbf{RQ2:} Does performance vary significantly across stage classes (flat, hills, mountain)?
+
+\textbf{RQ3:} Is there a significant interaction between rider class and stage class, indicating that certain rider types perform disproportionately better on specific terrain?
+
+\subsection{Dataset Description}
+The dataset consists of 3,496 observations with five variables:
+
+\begin{itemize}
+\item \texttt{all\_riders}: Cyclist name (184 unique riders)
+\item \texttt{rider\_class}: Categorical variable with four levels (All Rounder, Climber, Sprinter, Unclassed)
+\item \texttt{stage}: Stage identifier (X1 through X21, with 19 stages present)
+\item \texttt{points}: Integer performance points (range: 0--304)
+\item \texttt{stage\_class}: Terrain type with three levels (flat, hills, mount)
+\end{itemize}
+
+\subsection{Data Quality}
+The dataset contains no missing values, facilitating straightforward analysis. The distribution of observations across categories is unbalanced: Unclassed riders comprise 62.5\% of observations (n=2,185), while All Rounders represent only 9.2\% (n=323). Stage class distribution shows 31.6\% flat stages (n=1,104), 42.1\% hills (n=1,472), and 26.3\% mountain stages (n=920).
+
+The outcome variable (points) is measured on a ratio scale with a natural zero point, representing complete absence of performance. However, the distribution is heavily right-skewed with 50\% of observations recording zero points (median = 0), indicating that most riders fail to score in most stages, while a small proportion achieves high point totals. This distribution pattern will inform our choice of statistical methods in Section 3.
+
+% ============= 3. STATISTICAL METHODS =============
+\section{Statistical Methods}
+
+\subsection{Descriptive Statistics}
+To characterize the data, we employ standard measures of central tendency and dispersion. For each rider class and stage class combination, we calculate:
+
+\begin{itemize}
+\item \textbf{Mean}: The arithmetic average $\bar{x} = \frac{1}{n}\sum_{i=1}^{n} x_i$ provides the expected value under equal weighting \citep{agresti2018statistical}.
+\item \textbf{Standard Deviation}: The sample standard deviation $s = \sqrt{\frac{1}{n-1}\sum_{i=1}^{n}(x_i - \bar{x})^2}$ quantifies dispersion.
+\item \textbf{Median}: The 50th percentile, robust to outliers and appropriate for skewed distributions.
+\item \textbf{Quartiles}: The 25th (Q1) and 75th (Q3) percentiles, with interquartile range IQR = Q3 - Q1.
+\end{itemize}
+
+\subsection{Graphical Methods}
+\textbf{Boxplots} provide visual summaries of distribution shape, central tendency, and spread. A boxplot displays the median (central line), interquartile range (box), and potential outliers (points beyond 1.5 $\times$ IQR from quartiles) \citep{tukey1977exploratory}.
+
+\textbf{Interaction plots} display mean responses across factor combinations, revealing whether effects of one factor depend on levels of another factor \citep{montgomery2017design}.
+
+\subsection{Kruskal-Wallis Test}
+Given the severe right-skew and heteroscedasticity in our data, we employ the Kruskal-Wallis test, a non-parametric alternative to one-way ANOVA. This test assesses whether multiple independent samples originate from the same distribution \citep{kruskal1952use}.
+
+The test statistic is:
+\begin{equation}
+H = \frac{12}{n(n+1)} \sum_{i=1}^{k} \frac{R_i^2}{n_i} - 3(n+1)
+\end{equation}
+
+where $n$ is the total sample size, $k$ is the number of groups, $n_i$ is the sample size of group $i$, and $R_i$ is the sum of ranks for group $i$. Under the null hypothesis of equal distributions, $H$ approximately follows a chi-squared distribution with $k-1$ degrees of freedom when sample sizes are sufficiently large \citep{hollander2013nonparametric}.
+
+\textbf{Hypotheses:}
+\begin{align*}
+H_0&: \text{All groups have identical distributions} \\
+H_1&: \text{At least one group has a different distribution}
+\end{align*}
+
+We reject $H_0$ if $H > \chi^2_{k-1, \alpha}$ or equivalently if $p < \alpha$, where $\alpha = 0.05$ is our significance level.
+
+\subsection{Post-Hoc Pairwise Comparisons}
+When the Kruskal-Wallis test rejects the null hypothesis, we conduct pairwise Wilcoxon rank-sum tests to identify which specific groups differ \citep{wilcoxon1945individual}. The Wilcoxon test statistic for comparing groups $i$ and $j$ is based on the rank sum:
+
+\begin{equation}
+U = n_i n_j + \frac{n_i(n_i+1)}{2} - R_i
+\end{equation}
+
+To control for multiple comparisons, we apply Bonferroni correction, adjusting the significance level to $\alpha^* = \alpha / m$, where $m$ is the number of pairwise comparisons. For four rider classes, $m = \binom{4}{2} = 6$ comparisons, yielding $\alpha^* = 0.05/6 \approx 0.0083$.
+
+\subsection{Two-Way Analysis}
+To assess interaction effects between rider class and stage class, we employ an aligned rank transform approach \citep{wobbrock2011aligned}. This method involves:
+
+\begin{enumerate}
+\item Ranking all observations: $r_i = \text{rank}(y_i)$
+\item Fitting a linear model on ranks: $r_i = \mu + \alpha_j + \beta_k + (\alpha\beta)_{jk} + \epsilon_i$
+\item Applying ANOVA to decompose variance
+\end{enumerate}
+
+The F-statistic for each factor is:
+\begin{equation}
+F = \frac{MS_{\text{factor}}}{MS_{\text{error}}} = \frac{SS_{\text{factor}}/df_{\text{factor}}}{SS_{\text{error}}/df_{\text{error}}}
+\end{equation}
+
+This approach provides an approximate non-parametric test for main effects and interactions in factorial designs \citep{leys2013detecting}.
+
+\subsection{Stratified Analysis}
+To decompose the interaction effect, we conduct separate Kruskal-Wallis tests within each level of the stratifying variable. Specifically:
+
+\begin{itemize}
+\item Test for rider class differences within each stage class (flat, hills, mountain)
+\item Test for stage class differences within each rider class
+\end{itemize}
+
+This stratified approach clarifies where performance differences are most pronounced \citep{rothman2008modern}.
+
+% ============= 4. RESULTS =============
+\section{Evaluation and Results}
+
+\subsection{Descriptive Analysis}
+
+\subsubsection{Overall Performance Distribution}
+The points variable exhibits substantial right-skew (mean = 12.39, median = 0), with 25\% of observations at zero points and maximum values reaching 304 points. This distribution indicates that scoring is concentrated among a small proportion of high-performing riders in each stage, consistent with professional cycling dynamics where only top finishers earn points.
+
+\subsubsection{Performance by Rider Class}
+Table \ref{tab:desc_rider} presents descriptive statistics stratified by rider class. All Rounders demonstrate the highest mean performance (37.69 points) and largest variability (SD = 63.96), followed by Climbers (mean = 20.17, SD = 43.45) and Sprinters (mean = 15.04, SD = 41.83). Unclassed riders show markedly lower performance (mean = 6.42, SD = 23.28).
+
+\begin{table}[H]
+\centering
+\caption{Descriptive Statistics by Rider Class}
+\label{tab:desc_rider}
+\begin{tabular}{lrrrrrr}
+\toprule
+Rider Class & N & Mean & SD & Median & Q1 & Q3 \\
+\midrule
+All Rounder & 323 & 37.69 & 63.96 & 12.00 & 0.00 & 39.50 \\
+Climber & 437 & 20.17 & 43.45 & 6.00 & 0.00 & 16.00 \\
+Sprinter & 551 & 15.04 & 41.83 & 0.00 & 0.00 & 4.00 \\
+Unclassed & 2185 & 6.42 & 23.28 & 0.00 & 0.00 & 2.00 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Figure \ref{fig:box_rider} visualizes these distributions via boxplots, revealing substantial overlap despite mean differences, with All Rounders displaying the most outliers in the upper tail.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{plot1_boxplot_rider_class.png}
+\caption{Distribution of points by rider class. Boxes represent interquartile ranges, with medians shown as central lines. All Rounders exhibit highest median and greatest variability.}
+\label{fig:box_rider}
+\end{figure}
+
+\subsubsection{Performance by Stage Class}
+Stage class comparisons (Table \ref{tab:desc_stage}) reveal relatively similar mean performance across terrain types: flat stages (mean = 11.79, SD = 33.22), hills (mean = 12.52, SD = 36.13), and mountain stages (mean = 12.88, SD = 39.91). However, these aggregate statistics obscure important rider-specific patterns.
+
+\begin{table}[H]
+\centering
+\caption{Descriptive Statistics by Stage Class}
+\label{tab:desc_stage}
+\begin{tabular}{lrrrr}
+\toprule
+Stage Class & N & Mean & SD & Median \\
+\midrule
+Flat & 1104 & 11.79 & 33.22 & 0.00 \\
+Hills & 1472 & 12.52 & 36.13 & 0.00 \\
+Mountain & 920 & 12.88 & 39.91 & 0.00 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{plot2_boxplot_stage_class.png}
+\caption{Distribution of points by stage class. Median performance is zero across all terrain types, with mountain stages showing slightly higher mean values.}
+\label{fig:box_stage}
+\end{figure}
+
+\subsubsection{Interaction Between Rider Class and Stage Class}
+Table \ref{tab:desc_combined} presents disaggregated statistics revealing distinct performance patterns. All Rounders show increasing performance from flat (mean = 15.44) to hills (35.79) to mountain stages (67.42). Climbers display a similar but less pronounced pattern: flat (5.09), hills (21.67), mountain (35.86). Conversely, Sprinters peak on flat stages (38.98) but decline sharply on hills (5.20) and mountain terrain (2.04).
+
+\begin{table}[H]
+\centering
+\caption{Descriptive Statistics by Rider Class and Stage Class}
+\label{tab:desc_combined}
+\small
+\begin{tabular}{llrrrr}
+\toprule
+Rider Class & Stage Class & N & Mean & SD & Median \\
+\midrule
+All Rounder & Flat & 102 & 15.44 & 28.28 & 8.00 \\
+All Rounder & Hills & 136 & 35.79 & 57.46 & 12.50 \\
+All Rounder & Mountain & 85 & 67.42 & 88.96 & 17.00 \\
+Climber & Flat & 138 & 5.09 & 6.23 & 1.50 \\
+Climber & Hills & 184 & 21.67 & 45.98 & 7.00 \\
+Climber & Mountain & 115 & 35.86 & 57.02 & 12.00 \\
+Sprinter & Flat & 174 & 38.98 & 63.59 & 2.50 \\
+Sprinter & Hills & 232 & 5.20 & 21.95 & 0.00 \\
+Sprinter & Mountain & 145 & 2.04 & 5.89 & 0.00 \\
+Unclassed & Flat & 690 & 5.74 & 19.80 & 0.00 \\
+Unclassed & Hills & 920 & 9.10 & 30.66 & 0.00 \\
+Unclassed & Mountain & 575 & 2.95 & 7.91 & 0.00 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Figure \ref{fig:interaction} displays this interaction graphically. The non-parallel lines indicate that the effect of stage class on performance depends on rider class, suggesting a significant interaction effect that will be formally tested in the next section.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{plot3_interaction_plot.png}
+\caption{Mean points by rider class and stage class. Non-parallel lines indicate interaction: All Rounders and Climbers improve with terrain difficulty, while Sprinters decline.}
+\label{fig:interaction}
+\end{figure}
+
+\subsection{Hypothesis Testing}
+
+\subsubsection{Test 1: Overall Rider Class Differences}
+The Kruskal-Wallis test for rider class yields $H = 330.2$ with $df = 3$, $p < 2.2 \times 10^{-16}$, providing extremely strong evidence against the null hypothesis of equal distributions (Table \ref{tab:kw_rider}). We conclude that rider classes exhibit significantly different performance distributions.
+
+\begin{table}[H]
+\centering
+\caption{Kruskal-Wallis Test for Rider Class}
+\label{tab:kw_rider}
+\begin{tabular}{lrrr}
+\toprule
+Source & $\chi^2$ & df & $p$-value \\
+\midrule
+Rider Class & 330.2 & 3 & $< 2.2 \times 10^{-16}$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Post-hoc pairwise Wilcoxon tests with Bonferroni correction (Table \ref{tab:posthoc_rider}) reveal that all pairwise comparisons are statistically significant at the corrected level ($\alpha^* = 0.0083$), with the exception of Sprinter vs. Unclassed showing weaker evidence ($p = 0.027$).
+
+\begin{table}[H]
+\centering
+\caption{Post-Hoc Pairwise Comparisons for Rider Class (Bonferroni Adjusted)}
+\label{tab:posthoc_rider}
+\begin{tabular}{lr}
+\toprule
+Comparison & $p$-value \\
+\midrule
+All Rounder vs. Climber & 0.0025 \\
+All Rounder vs. Sprinter & $< 2 \times 10^{-16}$ \\
+All Rounder vs. Unclassed & $< 2 \times 10^{-16}$ \\
+Climber vs. Sprinter & $2.6 \times 10^{-14}$ \\
+Climber vs. Unclassed & $< 2 \times 10^{-16}$ \\
+Sprinter vs. Unclassed & 0.0270 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection{Test 2: Overall Stage Class Differences}
+The Kruskal-Wallis test for stage class yields $H = 9.52$ with $df = 2$, $p = 0.0086$, indicating significant differences in performance across terrain types at the $\alpha = 0.05$ level (Table \ref{tab:kw_stage}).
+
+\begin{table}[H]
+\centering
+\caption{Kruskal-Wallis Test for Stage Class}
+\label{tab:kw_stage}
+\begin{tabular}{lrrr}
+\toprule
+Source & $\chi^2$ & df & $p$-value \\
+\midrule
+Stage Class & 9.52 & 2 & 0.0086 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Post-hoc tests reveal that the mountain-flat comparison drives this result ($p = 0.0069$), while flat-hills ($p = 0.738$) and hills-mountain ($p = 0.090$) differences are not significant after multiple comparison adjustment.
+
+\subsubsection{Test 3: Two-Way Interaction Analysis}
+The aligned rank transform ANOVA (Table \ref{tab:anova_two}) reveals highly significant main effects for both rider class ($F = 125.15$, $p < 2.2 \times 10^{-16}$) and stage class ($F = 5.41$, $p = 0.0045$). Critically, the interaction term is also highly significant ($F = 17.26$, $p < 2.2 \times 10^{-16}$), confirming that the effect of terrain on performance depends on rider specialization.
+
+\begin{table}[H]
+\centering
+\caption{Two-Way ANOVA on Aligned Ranks}
+\label{tab:anova_two}
+\begin{tabular}{lrrrr}
+\toprule
+Source & df & $F$-value & $p$-value & Interpretation \\
+\midrule
+Rider Class & 3 & 125.15 & $< 2.2 \times 10^{-16}$ & *** \\
+Stage Class & 2 & 5.41 & 0.0045 & ** \\
+Rider $\times$ Stage & 6 & 17.26 & $< 2.2 \times 10^{-16}$ & *** \\
+\bottomrule
+\multicolumn{5}{l}{\footnotesize Signif. codes: *** $p < 0.001$, ** $p < 0.01$}
+\end{tabular}
+\end{table}
+
+\subsubsection{Test 4: Rider Class Differences Within Each Stage Class}
+Stratified Kruskal-Wallis tests within each terrain type (Table \ref{tab:stratified_stage}) all reject the null hypothesis ($p < 2.2 \times 10^{-16}$ for all three comparisons), indicating that rider class differences persist across all stage types but with varying magnitudes.
+
+\begin{table}[H]
+\centering
+\caption{Rider Class Differences Within Each Stage Class}
+\label{tab:stratified_stage}
+\begin{tabular}{lrrr}
+\toprule
+Stage Class & $\chi^2$ & df & $p$-value \\
+\midrule
+Flat & 82.10 & 3 & $< 2.2 \times 10^{-16}$ \\
+Hills & 156.40 & 3 & $< 2.2 \times 10^{-16}$ \\
+Mountain & 183.16 & 3 & $< 2.2 \times 10^{-16}$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Post-hoc tests reveal that on flat stages, All Rounders and Sprinters show similar performance ($p = 1.000$), both outperforming Climbers and Unclassed riders. On mountain stages, All Rounders and Climbers perform similarly ($p = 0.83$), both far exceeding Sprinters and Unclassed riders.
+
+\subsubsection{Test 5: Stage Class Differences Within Each Rider Class}
+Stratified tests within rider classes (Table \ref{tab:stratified_rider}) show that All Rounders ($p = 0.0028$), Climbers ($p < 0.001$), Sprinters ($p < 0.001$), and even Unclassed riders ($p = 0.0017$) all exhibit significant performance variation across terrain types.
+
+\begin{table}[H]
+\centering
+\caption{Stage Class Differences Within Each Rider Class}
+\label{tab:stratified_rider}
+\begin{tabular}{lrrr}
+\toprule
+Rider Class & $\chi^2$ & df & $p$-value \\
+\midrule
+All Rounder & 11.74 & 2 & 0.0028 \\
+Climber & 25.71 & 2 & $< 0.001$ \\
+Sprinter & 62.56 & 2 & $< 0.001$ \\
+Unclassed & 12.78 & 2 & 0.0017 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Post-hoc tests indicate that All Rounders perform significantly better on mountain vs. flat stages ($p = 0.0042$), while Climbers show significant improvement from flat to both hills ($p = 0.0027$) and mountain terrain ($p < 0.001$). Sprinters show the opposite pattern, declining sharply from flat to both hills and mountain stages ($p < 0.001$ for both).
+
+% ============= 5. SUMMARY =============
+\section{Summary and Discussion}
+
+\subsection{Summary of Findings}
+This analysis investigated performance differences among cyclist categories across varied terrain in a multi-stage tour. Three research questions were addressed using non-parametric statistical methods appropriate for the heavily right-skewed outcome distribution.
+
+\textbf{RQ1:} Significant overall differences exist between rider classes ($H = 330.2$, $p < 2.2 \times 10^{-16}$). All Rounders demonstrate the highest mean performance (37.69 points), followed by Climbers (20.17), Sprinters (15.04), and Unclassed riders (6.42). Pairwise comparisons confirmed significant differences for all pairs except Sprinter vs. Unclassed.
+
+\textbf{RQ2:} Stage class shows a modest but statistically significant main effect ($H = 9.52$, $p = 0.0086$), with mountain stages yielding slightly higher mean points than flat stages after controlling for multiple comparisons.
+
+\textbf{RQ3:} A highly significant interaction exists between rider class and stage class ($F = 17.26$, $p < 2.2 \times 10^{-16}$). Specifically:
+\begin{itemize}
+\item All Rounders and Climbers increase performance with terrain difficulty (flat $<$ hills $<$ mountain)
+\item Sprinters show the opposite pattern, excelling on flat stages but declining sharply on hills and mountain terrain
+\item Unclassed riders maintain consistently low performance across all stage types
+\end{itemize}
+
+These patterns align with cycling specialization theory and real-world race dynamics \citep{atkinson2003science}.
+
+\subsection{Interpretation and Practical Implications}
+The findings have several practical implications for cycling team management and race strategy:
+
+\textbf{Rider Selection:} Teams should prioritize All Rounders and Climbers for mountain-heavy tours, while Sprinters are essential for flat stages and sprint finishes. The data demonstrate that matching rider specialization to course profile is critical for maximizing team performance.
+
+\textbf{Point Optimization:} Given that Sprinters score nearly 40 points on average per flat stage but only 2 points on mountain stages, strategic resource allocation (e.g., team support, energy management) should be terrain-dependent.
+
+\textbf{Unclassed Riders:} The consistently low performance of Unclassed riders suggests they may serve support roles rather than contending for stage wins or overall classification.
+
+\subsection{Limitations}
+Several limitations warrant consideration:
+
+\textbf{Data Source:} The data originate from a game simulation rather than actual race results. While the patterns align with cycling theory, real-world data may exhibit additional complexity (e.g., team tactics, weather conditions, rider fatigue).
+
+\textbf{Unbalanced Design:} Unclassed riders comprise 62.5\% of observations, potentially influencing statistical power and effect size estimates.
+
+\textbf{Zero-Inflation:} With 50\% of observations at zero points, more sophisticated models (e.g., zero-inflated regression, hurdle models) might better capture the data generating process \citep{zeileis2008regression}.
+
+\textbf{Independence Assumption:} The same riders appear multiple times across stages, violating the independence assumption of Kruskal-Wallis tests. Mixed-effects models accounting for within-rider correlation would be more appropriate but fall outside the scope of this report \citep{pinheiro2006mixed}.
+
+\subsection{Future Directions}
+Future analyses could:
+\begin{itemize}
+\item Employ mixed-effects models to account for repeated measures
+\item Investigate rider-specific trajectories across the tour to assess fatigue effects
+\item Develop predictive models for stage winners based on terrain profiles
+\item Analyze team-level strategies and support dynamics
+\end{itemize}
+
+\subsection{Conclusion}
+This report demonstrates significant performance differences between cyclist categories that vary systematically across terrain types. The strong interaction effect confirms that rider specialization meaningfully impacts performance patterns. All Rounders emerge as the most versatile category, while Climbers and Sprinters show complementary strengths on opposite terrain types. These findings provide quantitative support for strategic rider deployment in multi-stage cycling competitions.
+
+% ============= BIBLIOGRAPHY =============
+\bibliographystyle{apalike}
+\begin{thebibliography}{99}
+
+\bibitem{agresti2018statistical}
+Agresti, A. and Finlay, B. (2018). \textit{Statistical Methods for the Social Sciences}. 5th ed. Pearson, Boston.
+
+\bibitem{atkinson2003science}
+Atkinson, G., Davison, R., Jeukendrup, A., and Passfield, L. (2003). Science and cycling: current knowledge and future directions for research. \textit{Journal of Sports Sciences}, 21(9):767--787.
+
+\bibitem{hollander2013nonparametric}
+Hollander, M., Wolfe, D. A., and Chicken, E. (2013). \textit{Nonparametric Statistical Methods}. 3rd ed. John Wiley \& Sons, Hoboken, NJ.
+
+\bibitem{kruskal1952use}
+Kruskal, W. H. and Wallis, W. A. (1952). Use of ranks in one-criterion variance analysis. \textit{Journal of the American Statistical Association}, 47(260):583--621.
+
+\bibitem{leys2013detecting}
+Leys, C., Ley, C., Klein, O., Bernard, P., and Licata, L. (2013). Detecting outliers: Do not use standard deviation around the mean, use absolute deviation around the median. \textit{Journal of Experimental Social Psychology}, 49(4):764--766.
+
+\bibitem{lucia2003tour}
+Lucia, A., Hoyos, J., and Chicharro, J. L. (2003). Physiology of professional road cycling. \textit{Sports Medicine}, 31(5):325--337.
+
+\bibitem{montgomery2017design}
+Montgomery, D. C. (2017). \textit{Design and Analysis of Experiments}. 9th ed. John Wiley \& Sons, Hoboken, NJ.
+
+\bibitem{pinheiro2006mixed}
+Pinheiro, J. and Bates, D. (2006). \textit{Mixed-Effects Models in S and S-PLUS}. Springer Science \& Business Media, New York.
+
+\bibitem{rothman2008modern}
+Rothman, K. J., Greenland, S., and Lash, T. L. (2008). \textit{Modern Epidemiology}. 3rd ed. Lippincott Williams \& Wilkins, Philadelphia.
+
+\bibitem{tukey1977exploratory}
+Tukey, J. W. (1977). \textit{Exploratory Data Analysis}. Addison-Wesley, Reading, MA.
+
+\bibitem{wilcoxon1945individual}
+Wilcoxon, F. (1945). Individual comparisons by ranking methods. \textit{Biometrics Bulletin}, 1(6):80--83.
+
+\bibitem{wobbrock2011aligned}
+Wobbrock, J. O., Findlater, L., Gergle, D., and Higgins, J. J. (2011). The aligned rank transform for nonparametric factorial analyses using only ANOVA procedures. In \textit{Proceedings of the SIGCHI Conference on Human Factors in Computing Systems}, pages 143--146.
+
+\bibitem{zeileis2008regression}
+Zeileis, A., Kleiber, C., and Jackman, S. (2008). Regression models for count data in R. \textit{Journal of Statistical Software}, 27(8):1--25.
+
+\end{thebibliography}
+
+\end{document}

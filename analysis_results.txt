@@ -1,0 +1,338 @@
+=== DATASET OVERVIEW ===
+Dimensions: 3496 5 
+
+Structure:
+'data.frame':	3496 obs. of  5 variables:
+ $ all_riders : Factor w/ 184 levels "Adam Yates","Alberto Dainese",..: 163 163 163 163 163 163 163 163 163 163 ...
+ $ rider_class: Factor w/ 4 levels "All Rounder",..: 1 1 1 1 1 1 1 1 1 1 ...
+ $ stage      : Factor w/ 19 levels "X1","X10","X11",..: 1 11 14 15 16 17 18 19 2 3 ...
+ $ points     : int  15 219 34 264 114 274 50 50 109 39 ...
+ $ stage_class: Factor w/ 3 levels "flat","hills",..: 1 2 1 2 2 2 1 1 2 2 ...
+
+=== SUMMARY STATISTICS ===
+              all_riders        rider_class       stage          points      
+ Adam Yates        :  19   All Rounder: 323   X1     : 184   Min.   :  0.00  
+ Alberto Dainese   :  19   Climber    : 437   X10    : 184   1st Qu.:  0.00  
+ Aleksandr Vlasov  :  19   Sprinter   : 551   X11    : 184   Median :  0.00  
+ Alex Aranburu     :  19   Unclassed  :2185   X12    : 184   Mean   : 12.39  
+ Alex Baudin       :  19                      X14    : 184   3rd Qu.:  8.00  
+ Alexandre Delettre:  19                      X15    : 184   Max.   :304.00  
+ (Other)           :3382                      (Other):2392                   
+ stage_class 
+ flat :1104  
+ hills:1472  
+ mount: 920  
+             
+             
+             
+             
+
+=== MISSING VALUES ===
+Total missing values: 0 
+
+=== UNIQUE VALUES ===
+Number of unique riders: 184 
+Rider classes: All Rounder Climber Sprinter Unclassed 
+Stage classes: flat hills mount 
+Number of stages: 19 
+Total observations: 3496 
+
+
+=== DESCRIPTIVE STATISTICS BY RIDER CLASS ===
+
+ All Rounder :
+  N = 323 
+  Mean = 37.69 
+  SD = 63.96 
+  Median = 12 
+  Min = 0 
+  Max = 304 
+  Q1 = 0 
+  Q3 = 39.5 
+
+ Climber :
+  N = 437 
+  Mean = 20.17 
+  SD = 43.45 
+  Median = 6 
+  Min = 0 
+  Max = 269 
+  Q1 = 0 
+  Q3 = 16 
+
+ Sprinter :
+  N = 551 
+  Mean = 15.04 
+  SD = 41.83 
+  Median = 0 
+  Min = 0 
+  Max = 272 
+  Q1 = 0 
+  Q3 = 4 
+
+ Unclassed :
+  N = 2185 
+  Mean = 6.42 
+  SD = 23.28 
+  Median = 0 
+  Min = 0 
+  Max = 260 
+  Q1 = 0 
+  Q3 = 2 
+
+
+=== DESCRIPTIVE STATISTICS BY STAGE CLASS ===
+
+ flat :
+  N = 1104 
+  Mean = 11.79 
+  SD = 33.22 
+  Median = 0 
+  Min = 0 
+  Max = 272 
+
+ hills :
+  N = 1472 
+  Mean = 12.52 
+  SD = 36.13 
+  Median = 0 
+  Min = 0 
+  Max = 274 
+
+ mount :
+  N = 920 
+  Mean = 12.88 
+  SD = 39.91 
+  Median = 0 
+  Min = 0 
+  Max = 304 
+
+
+=== DESCRIPTIVE STATISTICS BY RIDER CLASS AND STAGE CLASS ===
+
+ All Rounder :
+   flat - N: 102 Mean: 15.44 SD: 28.28 Median: 8 
+   hills - N: 136 Mean: 35.79 SD: 57.46 Median: 12.5 
+   mount - N: 85 Mean: 67.42 SD: 88.96 Median: 17 
+
+ Climber :
+   flat - N: 138 Mean: 5.09 SD: 6.23 Median: 1.5 
+   hills - N: 184 Mean: 21.67 SD: 45.98 Median: 7 
+   mount - N: 115 Mean: 35.86 SD: 57.02 Median: 12 
+
+ Sprinter :
+   flat - N: 174 Mean: 38.98 SD: 63.59 Median: 2.5 
+   hills - N: 232 Mean: 5.2 SD: 21.95 Median: 0 
+   mount - N: 145 Mean: 2.04 SD: 5.89 Median: 0 
+
+ Unclassed :
+   flat - N: 690 Mean: 5.74 SD: 19.8 Median: 0 
+   hills - N: 920 Mean: 9.1 SD: 30.66 Median: 0 
+   mount - N: 575 Mean: 2.95 SD: 7.91 Median: 0 
+null device 
+          1 
+null device 
+          1 
+null device 
+          1 
+null device 
+          1 
+
+
+=== HYPOTHESIS TESTING ===
+
+--- TEST 1: Difference between Rider Classes (Overall) ---
+
+	Kruskal-Wallis rank sum test
+
+data:  points by rider_class
+Kruskal-Wallis chi-squared = 330.2, df = 3, p-value < 2.2e-16
+
+
+Post-hoc pairwise Wilcoxon tests (Bonferroni correction):
+
+	Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  data$points and data$rider_class 
+
+          All Rounder Climber Sprinter
+Climber   0.0025      -       -       
+Sprinter  < 2e-16     2.6e-14 -       
+Unclassed < 2e-16     < 2e-16 0.0270  
+
+P value adjustment method: bonferroni 
+
+--- TEST 2: Difference between Stage Classes (Overall) ---
+
+	Kruskal-Wallis rank sum test
+
+data:  points by stage_class
+Kruskal-Wallis chi-squared = 9.5153, df = 2, p-value = 0.008586
+
+
+Post-hoc pairwise Wilcoxon tests (Bonferroni correction):
+
+	Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  data$points and data$stage_class 
+
+      flat   hills 
+hills 0.7377 -     
+mount 0.0069 0.0901
+
+P value adjustment method: bonferroni 
+
+--- TEST 3: Two-Way Analysis (Rider Class × Stage Class) ---
+Analysis of Variance Table
+
+Response: rank_points
+                          Df     Sum Sq  Mean Sq  F value    Pr(>F)    
+rider_class                3  256842983 85614328 125.1453 < 2.2e-16 ***
+stage_class                2    7401342  3700671   5.4094  0.004512 ** 
+rider_class:stage_class    6   70831519 11805253  17.2561 < 2.2e-16 ***
+Residuals               3484 2383471716   684119                       
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+--- TEST 4: Rider Class Differences within Each Stage Class ---
+
+ flat stages:
+
+	Kruskal-Wallis rank sum test
+
+data:  points by rider_class
+Kruskal-Wallis chi-squared = 82.097, df = 3, p-value < 2.2e-16
+
+Post-hoc pairwise Wilcoxon tests:
+
+	Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  subset_data$points and subset_data$rider_class 
+
+          All Rounder Climber Sprinter
+Climber   0.015       -       -       
+Sprinter  1.000       0.037   -       
+Unclassed 7.2e-10     3.9e-05 1.6e-11 
+
+P value adjustment method: bonferroni 
+
+ hills stages:
+
+	Kruskal-Wallis rank sum test
+
+data:  points by rider_class
+Kruskal-Wallis chi-squared = 156.4, df = 3, p-value < 2.2e-16
+
+Post-hoc pairwise Wilcoxon tests:
+
+	Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  subset_data$points and subset_data$rider_class 
+
+          All Rounder Climber Sprinter
+Climber   0.12        -       -       
+Sprinter  < 2e-16     2.3e-14 -       
+Unclassed < 2e-16     < 2e-16 1.00    
+
+P value adjustment method: bonferroni 
+
+ mount stages:
+
+	Kruskal-Wallis rank sum test
+
+data:  points by rider_class
+Kruskal-Wallis chi-squared = 183.16, df = 3, p-value < 2.2e-16
+
+Post-hoc pairwise Wilcoxon tests:
+
+	Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  subset_data$points and subset_data$rider_class 
+
+          All Rounder Climber Sprinter
+Climber   0.83        -       -       
+Sprinter  1.4e-14     2.6e-16 -       
+Unclassed < 2e-16     < 2e-16 1.00    
+
+P value adjustment method: bonferroni 
+
+--- TEST 5: Stage Class Differences within Each Rider Class ---
+
+ All Rounder :
+
+	Kruskal-Wallis rank sum test
+
+data:  points by stage_class
+Kruskal-Wallis chi-squared = 11.739, df = 2, p-value = 0.002824
+
+Post-hoc pairwise Wilcoxon tests:
+
+	Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  subset_data$points and subset_data$stage_class 
+
+      flat   hills 
+hills 0.0511 -     
+mount 0.0042 0.3473
+
+P value adjustment method: bonferroni 
+
+ Climber :
+
+	Kruskal-Wallis rank sum test
+
+data:  points by stage_class
+Kruskal-Wallis chi-squared = 25.713, df = 2, p-value = 2.609e-06
+
+Post-hoc pairwise Wilcoxon tests:
+
+	Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  subset_data$points and subset_data$stage_class 
+
+      flat    hills 
+hills 0.0027  -     
+mount 2.2e-06 0.0730
+
+P value adjustment method: bonferroni 
+
+ Sprinter :
+
+	Kruskal-Wallis rank sum test
+
+data:  points by stage_class
+Kruskal-Wallis chi-squared = 62.556, df = 2, p-value = 2.607e-14
+
+Post-hoc pairwise Wilcoxon tests:
+
+	Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  subset_data$points and subset_data$stage_class 
+
+      flat    hills
+hills 4.9e-10 -    
+mount 3.2e-11 0.26 
+
+P value adjustment method: bonferroni 
+
+ Unclassed :
+
+	Kruskal-Wallis rank sum test
+
+data:  points by stage_class
+Kruskal-Wallis chi-squared = 12.776, df = 2, p-value = 0.001681
+
+Post-hoc pairwise Wilcoxon tests:
+
+	Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  subset_data$points and subset_data$stage_class 
+
+      flat   hills 
+hills 1.0000 -     
+mount 0.0037 0.0040
+
+P value adjustment method: bonferroni 
+
+=== ANALYSIS COMPLETE ===
+All visualizations saved as PNG files.
